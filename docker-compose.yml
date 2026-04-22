@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: roadto500-db
+    environment:
+      POSTGRES_DB: roadto500
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 11joshua
+    ports:
+      - "5432:5432"
+    volumes:
+      - roadto500_data:/var/lib/postgresql/data
+
+volumes:
+  roadto500_data:

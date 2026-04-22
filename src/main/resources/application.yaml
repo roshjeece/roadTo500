@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: RoadTo500
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/roadto500
+    username: postgres
+    password: 11joshua
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+server:
+  port: 8080
