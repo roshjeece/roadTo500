@@ -18,8 +18,8 @@ public class Soldier {
     private String name;
 
     // keeping this optional for now given non-focus on authentication, just a placeholder if I was to implement authentication later
-    @Column(name = "password_hash")
-    private String passwordHash;
+    @Column
+    private String password;
 
     // name specified because Spring/Hibernate converts camelCase Java fields to make snake_case columns by default
     @Column(name = "date_of_birth", nullable = false)
