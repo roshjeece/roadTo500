@@ -1,9 +1,6 @@
 package com.roadto500.api.service;
 
-import com.roadto500.api.model.AftEvent;
-import com.roadto500.api.model.Exercise;
-import com.roadto500.api.model.ExerciseDifficulty;
-import com.roadto500.api.model.PrescriptionType;
+import com.roadto500.api.model.*;
 import com.roadto500.api.repository.AftEventRepository;
 import com.roadto500.api.repository.ExerciseAftEventRepository;
 import com.roadto500.api.repository.ExerciseRepository;
@@ -11,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.roadto500.api.model.AftEventUnit.*;
+import static com.roadto500.api.model.ContributionLevel.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,20 @@ public class DataInitializationService implements CommandLineRunner {
     private final AftEventRepository aftEventRepository;
     private final ExerciseRepository exerciseRepository;
     private final ExerciseAftEventRepository exerciseAftEventRepository;
+
+    private void createMapping(String exerciseName, String eventAbbreviation, ContributionLevel contributionLevel) {
+        Optional<Exercise> exercise = exerciseRepository.findByName(exerciseName);
+        Optional<AftEvent> aftEvent = aftEventRepository.findByAbbreviation(eventAbbreviation);
+
+        if (exercise.isPresent() && aftEvent.isPresent()) {
+            ExerciseAftEvent mapping = new ExerciseAftEvent();
+            mapping.setExercise(exercise.get());
+            mapping.setAftEvent(aftEvent.get());
+            mapping.setContributionLevel(contributionLevel);
+            exerciseAftEventRepository.save(mapping);
+        }
+
+    }
 
     @Override
     // tells Java/IntelliJ that we are fulfilling the CommandLineRunner's defined
@@ -47,10 +61,14 @@ public class DataInitializationService implements CommandLineRunner {
             seedPlkExercises();
             seed2mrExercises();
         }
+
+        if (exerciseAftEventRepository.count() == 0) {
+            seedExerciseAftEventMappings();
+        }
     }
 
     // ============================================================
-    // AFTEVENT SEED METHODS
+    // AFT EVENT SEED METHODS
     // ============================================================
 
     private AftEvent createMdl() {
@@ -591,5 +609,115 @@ public class DataInitializationService implements CommandLineRunner {
                 PrescriptionType.DURATION,
                 "Climb stairs continuously at a steady pace for a prescribed duration. Builds the quad and glute endurance that directly transfers to 2MR performance. Available to Soldiers in barracks or any multi-story building — no track required."
         ));
+    }
+
+    // ============================================================
+    // COMPLETE seedExerciseAftEventMappings() METHOD
+    // ============================================================
+
+    private void seedExerciseAftEventMappings() {
+
+        // ─── MDL PRIMARY ─────────────────────────────────────────
+        createMapping("Bodyweight Hip Hinge",    "MDL", PRIMARY);
+        createMapping("Bodyweight Good Morning", "MDL", PRIMARY);
+        createMapping("Romanian Deadlift",       "MDL", PRIMARY);
+        createMapping("Single-Leg Hip Hinge",    "MDL", PRIMARY);
+        createMapping("Trap Bar Deadlift",       "MDL", PRIMARY);
+        createMapping("Kettlebell Swing",        "MDL", PRIMARY);
+        createMapping("Farmer Carry",            "MDL", PRIMARY);
+        createMapping("Nordic Hamstring Curl",   "MDL", PRIMARY);
+        createMapping("Conventional Deadlift",   "MDL", PRIMARY);
+        createMapping("Rack Pull",               "MDL", PRIMARY);
+        createMapping("Sumo Deadlift",           "MDL", PRIMARY);
+        createMapping("Barbell Good Morning",    "MDL", PRIMARY);
+        createMapping("Hex Bar Shrug",           "MDL", PRIMARY);
+
+        // ─── MDL SECONDARY (cross-event carry exercises) ──────────
+        createMapping("Farmer Carry",            "SDC", SECONDARY);
+        createMapping("Kettlebell Farmer Carry", "MDL", SECONDARY);
+        createMapping("Trap Bar Carry",          "MDL", SECONDARY);
+        createMapping("Sled Drag",               "MDL", SECONDARY);
+
+        // ─── HRP PRIMARY ─────────────────────────────────────────
+        createMapping("Incline Push-Up",          "HRP", PRIMARY);
+        createMapping("Standard Push-Up",         "HRP", PRIMARY);
+        createMapping("Dumbbell Bench Press",     "HRP", PRIMARY);
+        createMapping("Hand-Release Push-Up",     "HRP", PRIMARY);
+        createMapping("Wide-Grip Push-Up",        "HRP", PRIMARY);
+        createMapping("Tricep Dip",               "HRP", PRIMARY);
+        createMapping("Barbell Bench Press",      "HRP", PRIMARY);
+        createMapping("Deficit Push-Up",          "HRP", PRIMARY);
+        createMapping("Archer Push-Up",           "HRP", PRIMARY);
+        createMapping("Push-Up Isometric Hold",   "HRP", PRIMARY);
+        createMapping("Weighted Push-Up",         "HRP", PRIMARY);
+        createMapping("Close-Grip Bench Press",   "HRP", PRIMARY);
+        createMapping("Ring Push-Up",             "HRP", PRIMARY);
+
+        // ─── HRP SECONDARY (core exercises that support push-up position) ──
+        createMapping("Standard Push-Up",       "PLK", SECONDARY);
+        createMapping("Push-Up Isometric Hold", "PLK", SECONDARY);
+        createMapping("Ring Push-Up",           "PLK", SECONDARY);
+
+        // ─── SDC PRIMARY ─────────────────────────────────────────
+        createMapping("Lateral Shuffles",        "SDC", PRIMARY);
+        createMapping("Broad Jump",              "SDC", PRIMARY);
+        createMapping("Slider Drag",             "SDC", PRIMARY);
+        createMapping("Shuttle Run",             "SDC", PRIMARY);
+        createMapping("Sandbag Front Carry",     "SDC", PRIMARY);
+        createMapping("Sled Drag",               "SDC", PRIMARY);
+        createMapping("Kettlebell Farmer Carry", "SDC", PRIMARY);
+        createMapping("Burpee to Sprint",        "SDC", PRIMARY);
+        createMapping("Box Jump",               "SDC", PRIMARY);
+        createMapping("Sled Push",              "SDC", PRIMARY);
+        createMapping("Prowler Sprint Interval", "SDC", PRIMARY);
+        createMapping("Trap Bar Carry",          "SDC", PRIMARY);
+        createMapping("Bear Crawl",              "SDC", PRIMARY);
+
+        // ─── SDC SECONDARY (carries and strength that cross into MDL) ──
+        createMapping("Broad Jump",    "2MR", SECONDARY);
+        createMapping("Box Jump",      "2MR", SECONDARY);
+        createMapping("Shuttle Run",   "2MR", SECONDARY);
+        createMapping("Burpee to Sprint", "2MR", SECONDARY);
+
+        // ─── PLK PRIMARY ─────────────────────────────────────────
+        createMapping("Kneeling Plank",      "PLK", PRIMARY);
+        createMapping("Standard Plank",      "PLK", PRIMARY);
+        createMapping("Dead Bug",            "PLK", PRIMARY);
+        createMapping("Side Plank",          "PLK", PRIMARY);
+        createMapping("Hollow Body Hold",    "PLK", PRIMARY);
+        createMapping("Plank Shoulder Tap",  "PLK", PRIMARY);
+        createMapping("Ab Wheel Rollout",    "PLK", PRIMARY);
+        createMapping("RKC Plank",           "PLK", PRIMARY);
+        createMapping("Long-Lever Plank",    "PLK", PRIMARY);
+        createMapping("Dragon Flag",         "PLK", PRIMARY);
+        createMapping("Weighted Plank",      "PLK", PRIMARY);
+        createMapping("Stir the Pot",        "PLK", PRIMARY);
+
+        // ─── PLK SECONDARY (core stability supporting other events) ──
+        createMapping("Dead Bug",         "MDL", SECONDARY);
+        createMapping("Hollow Body Hold", "MDL", SECONDARY);
+        createMapping("Ab Wheel Rollout", "MDL", SECONDARY);
+        createMapping("Dead Bug",         "HRP", SECONDARY);
+        createMapping("Side Plank",       "SDC", SECONDARY);
+
+        // ─── 2MR PRIMARY ─────────────────────────────────────────
+        createMapping("Walk-Run Interval",          "2MR", PRIMARY);
+        createMapping("Easy Conversational Run",    "2MR", PRIMARY);
+        createMapping("Stationary Bike — Steady State", "2MR", PRIMARY);
+        createMapping("Tempo Run",                  "2MR", PRIMARY);
+        createMapping("400m Repeats",               "2MR", PRIMARY);
+        createMapping("Hill Run",                   "2MR", PRIMARY);
+        createMapping("Rowing Machine — Steady State", "2MR", PRIMARY);
+        createMapping("800m Repeats",               "2MR", PRIMARY);
+        createMapping("Fartlek Run",                "2MR", PRIMARY);
+        createMapping("1-Mile Repeat",              "2MR", PRIMARY);
+        createMapping("Treadmill Speed Interval",   "2MR", PRIMARY);
+        createMapping("Jump Rope Interval",         "2MR", PRIMARY);
+        createMapping("Stair Climb",                "2MR", PRIMARY);
+
+        // ─── 2MR SECONDARY (SDC conditioning that crosses into 2MR) ──
+        createMapping("Prowler Sprint Interval", "2MR", SECONDARY);
+        createMapping("Hill Run",               "SDC", SECONDARY);
+        createMapping("Stair Climb",            "SDC", SECONDARY);
     }
 }
