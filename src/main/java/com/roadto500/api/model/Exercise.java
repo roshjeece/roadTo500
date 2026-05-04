@@ -1,5 +1,6 @@
 package com.roadto500.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class Exercise {
     @Column(nullable = false)
     private String categories;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)
     private List<ExerciseAftEvent> aftEventMappings;
 
