@@ -29,6 +29,7 @@ public class SoldierService {
 
     public SoldierResponseDTO newSoldierResponseDTO(Soldier soldier) {
         SoldierResponseDTO soldierResponseDTO = new SoldierResponseDTO();
+        soldierResponseDTO.setId(soldier.getId());
         soldierResponseDTO.setName(soldier.getName());
         soldierResponseDTO.setDob(soldier.getDob());
         soldierResponseDTO.setGender(soldier.getGender());

@@ -1,5 +1,6 @@
 package com.roadto500.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class PlannedExercise {
 
     @ManyToOne
     @JoinColumn(name = "planned_session_id", nullable = false)
+    @JsonIgnore
     private PlannedSession plannedSession;
 
     @ManyToOne

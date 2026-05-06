@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,5 +32,8 @@ public class WeeklyPlan {
 
     @Column(name = "date_time_group_generation", nullable = false)
     private LocalDateTime generationDTG;
+
+    @OneToMany(mappedBy = "weeklyPlan", fetch = FetchType.EAGER)
+    private List<PlannedSession> plannedSessions;
 
 }

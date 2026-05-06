@@ -1,10 +1,12 @@
 package com.roadto500.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,6 +19,7 @@ public class PlannedSession {
 
     @ManyToOne
     @JoinColumn(name = "weekly_plan_id", nullable = false)
+    @JsonIgnore
     private WeeklyPlan weeklyPlan;
 
     @ManyToOne
@@ -46,5 +49,8 @@ public class PlannedSession {
     // Key this is required. Soldiers deserve to understand why they're doing a specific session.
     @Column(name = "session_description", columnDefinition = "TEXT", nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "plannedSession", fetch = FetchType.EAGER)
+    private List<PlannedExercise> plannedExercises;
 
 }

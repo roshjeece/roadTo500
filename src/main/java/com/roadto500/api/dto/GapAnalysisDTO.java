@@ -1,6 +1,5 @@
 package com.roadto500.api.dto;
 
-import com.roadto500.api.model.AftEvent;
 import com.roadto500.api.model.CheckInFrequency;
 import lombok.Data;
 
@@ -8,9 +7,9 @@ import java.util.Map;
 
 @Data
 public class GapAnalysisDTO {
-    private Map<AftEvent, Integer> gapPerEvent;
-    private Map<AftEvent, CheckInFrequency> checkInFrequency;
-    private Map<AftEvent, Integer> sessionAllocation;
+    private Map<String, Integer> gapPerEvent;
+    private Map<String, CheckInFrequency> checkInFrequency;
+    private Map<String, Integer> sessionAllocation;
 
 }
 
