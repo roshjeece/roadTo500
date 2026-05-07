@@ -26,6 +26,10 @@ public class PlannedSession {
     @JoinColumn(name = "check_in_set")
     private AftEvent aftEvent;
 
+    @Column(name = "session_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SessionType sessionType;
+
     @Column(name = "session_date", nullable = false)
     private LocalDate sessionDate;
 

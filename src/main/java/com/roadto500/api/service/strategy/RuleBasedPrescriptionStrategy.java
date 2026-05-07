@@ -2,6 +2,7 @@ package com.roadto500.api.service.strategy;
 
 import com.roadto500.api.dto.GapAnalysisDTO;
 import com.roadto500.api.model.CheckInFrequency;
+import com.roadto500.api.model.SessionType;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,13 +14,13 @@ import static com.roadto500.api.model.CheckInFrequency.*;
 public class RuleBasedPrescriptionStrategy implements PrescriptionStrategy {
     @Override
     public GapAnalysisDTO analyze(Map<String, Integer> scores) {
+        System.out.println("Scores received: " + scores);
         GapAnalysisDTO gapAnalysisDTO = new GapAnalysisDTO();
 
         Map<String, Integer> gapHashMap = new HashMap<>();
         Map<String, CheckInFrequency> checkInFrequencyMap = new HashMap<>();
-        Map<String, Integer> sessionAllocationMap = new HashMap<>();
-        int defaultTotalSessions = 5;
-        double totalGap = 0.0;
+        Map<SessionType, Integer> sessionAllocationMap = new HashMap<>();
+        int defaultTotalSessions = 7;
 
         // gapPerEvent
         for (Map.Entry<String, Integer> entry : scores.entrySet()) {
@@ -38,18 +39,35 @@ public class RuleBasedPrescriptionStrategy implements PrescriptionStrategy {
         gapAnalysisDTO.setCheckInFrequency(checkInFrequencyMap);
 
         // sessionAllocation
-        for (int i : gapHashMap.values()) {
-            totalGap += i;
+        double totalMaxGap = 0.0;
+        for (SessionType sessionType : SessionType.values()) {
+            int maxGap = sessionType.getEvents()
+                    .stream()
+                    .mapToInt(gapHashMap::get)
+                    .max()
+                    .orElse(0);
+            totalMaxGap += maxGap;
+
         }
-        for (Map.Entry<String, Integer> entry : gapHashMap.entrySet()) {
-            int sessionsForEvent = 1;
+        for (SessionType sessionType : SessionType.values()) {
+            int maxGap = sessionType.getEvents()
+                    .stream()
+                    .mapToInt(gapHashMap::get)
+                    .max()
+                    .orElse(0);
+            int sessionsForEvent;
             // if a Soldier has a 500 in each event, this case handling simply assigns one workout per event per week and ensures no divide by 0 error
-            if (totalGap == 0) {
-                sessionAllocationMap.put(entry.getKey(), sessionsForEvent);
+            if (maxGap == 0) {
+                sessionsForEvent = sessionType.getMinSessions();
             } else {
-                sessionsForEvent = (int) Math.round((entry.getValue() / totalGap) * defaultTotalSessions);
-                sessionAllocationMap.put(entry.getKey(), sessionsForEvent);
+                sessionsForEvent = Math.clamp(
+                        Math.round((maxGap / totalMaxGap) * defaultTotalSessions),
+                        sessionType.getMinSessions(),
+                        sessionType.getMaxSessions());
             }
+            sessionAllocationMap.put(sessionType, sessionsForEvent);
+            System.out.println(sessionAllocationMap);
+
         }
         gapAnalysisDTO.setSessionAllocation(sessionAllocationMap);
 

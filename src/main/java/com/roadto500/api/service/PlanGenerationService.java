@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.roadto500.api.model.ExerciseDifficulty.*;
 import static com.roadto500.api.model.WeekStatus.ACTIVE;
@@ -27,7 +26,6 @@ public class PlanGenerationService {
     private final PlannedSessionRepository plannedSessionRepository;
     private final PlannedExerciseRepository plannedExerciseRepository;
     private final ExerciseAftEventRepository exerciseAftEventRepository;
-    private final AftEventRepository aftEventRepository;
     private final RuleBasedPrescriptionStrategy ruleBasedPrescriptionStrategy;
     private final PerformanceService performanceService;
 
@@ -55,11 +53,11 @@ public class PlanGenerationService {
         weeklyPlan.setGenerationDTG(LocalDateTime.now());
         weeklyPlanRepository.save(weeklyPlan);
 
-        for(Map.Entry<String, Integer> entry : gapAnalysisDTO.getSessionAllocation().entrySet()) {
-            for(int i = 0; i < entry.getValue(); i++) {
+        for (Map.Entry<SessionType, Integer> entry : gapAnalysisDTO.getSessionAllocation().entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
                 PlannedSession plannedSession = new PlannedSession();
                 plannedSession.setWeeklyPlan(weeklyPlan);
-                plannedSession.setAftEvent(aftEventRepository.findByAbbreviation(entry.getKey()).orElseThrow());
+                plannedSession.setSessionType(entry.getKey());
                 plannedSession.setSessionDate(currentDate);
                 plannedSession.setDayOfWeek(currentDate.getDayOfWeek());
                 plannedSession.setDayStatus(DayStatus.ACTIVE);
@@ -67,35 +65,38 @@ public class PlanGenerationService {
                 plannedSessionRepository.save(plannedSession);
                 currentDate = currentDate.plusDays(1);
 
-                ExerciseDifficulty difficulty = getDifficultyForScore(currentScores.get(entry.getKey()));
-                List<Exercise> exercises = exerciseAftEventRepository
-                        .findByAftEvent_Abbreviation(entry.getKey())
-                        .stream()
-                        .map(ExerciseAftEvent::getExercise)
-                        .filter(e -> e.getDifficulty() == difficulty)
-                        .limit(5)
-                        .toList();
+                for (String eventAbbreviation : entry.getKey().getEvents()) {
+                    ExerciseDifficulty difficulty = getDifficultyForScore(currentScores.get(eventAbbreviation));
+                    List<Exercise> exercises = exerciseAftEventRepository
+                            .findByAftEvent_Abbreviation(eventAbbreviation)
+                            .stream()
+                            .map(ExerciseAftEvent::getExercise)
+                            .filter(e -> e.getDifficulty() == difficulty)
+                            .limit(5)
+                            .toList();
 
-                for(Exercise exercise : exercises) {
-                    PlannedExercise plannedExercise = new PlannedExercise();
-                    plannedExercise.setPlannedSession(plannedSession);
-                    plannedExercise.setExercise(exercise);
-                    plannedExerciseRepository.save(plannedExercise);
+                    for (Exercise exercise : exercises) {
+                        PlannedExercise plannedExercise = new PlannedExercise();
+                        plannedExercise.setPlannedSession(plannedSession);
+                        plannedExercise.setExercise(exercise);
+                        plannedExerciseRepository.save(plannedExercise);
+                    }
+
+
                 }
 
             }
         }
 
 
-        return weeklyPlan;
+        return weeklyPlanRepository.findById(weeklyPlan.getId()).orElseThrow();
     }
 
     private ExerciseDifficulty getDifficultyForScore(int score) {
-        if(score > 79) return ADVANCED;
-        if(score > 59) return INTERMEDIATE;
+        if (score > 79) return ADVANCED;
+        if (score > 59) return INTERMEDIATE;
         else return BEGINNER;
     }
-
 
 
 }
