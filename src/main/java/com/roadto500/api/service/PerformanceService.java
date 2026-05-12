@@ -36,6 +36,7 @@ public class PerformanceService {
         aftTestResult.setTestDate(aftScoreRequestDTO.getDateOfTest());
         aftScoreResponseDTO.setName(soldier.getName());
         aftTestResult.setTotalScore(0);
+        // Initial save to generate ID for EventScore FK references
         aftTestResultRepository.save(aftTestResult);
 
         for (Map.Entry<String, Integer> entry : aftScoreRequestDTO.getEventScore().entrySet()) {
@@ -55,22 +56,19 @@ public class PerformanceService {
         updateImprovementSuggestions(soldier.getId());
 
         return aftScoreResponseDTO;
-
     }
 
     public Map<String, Integer> getCurrentScoresForSoldier(Long soldierId) {
-
         Map<String, Integer> currentScores = new HashMap<>();
         List<String> abbreviations = List.of("MDL", "HRP", "SDC", "PLK", "2MR");
 
         for (String event : abbreviations) {
             currentScores.put(event, eventScoreRepository
-                    .findTopByAftTestResult_Soldier_IdAndAftEvent_AbbreviationOrderByAftTestResult_TestDateDesc(soldierId, event)
+                    .findMostRecentScoreBySoldierAndEvent(soldierId, event)
                     .map(EventScore::getPointsEarned)
                     .orElse(0));
         }
         return currentScores;
-
     }
 
     public void updateImprovementSuggestions(Long soldierId) {
@@ -87,9 +85,9 @@ public class PerformanceService {
             suggestion.setScore(currentScores.get(abbreviation));
             suggestion.setGap(gapAnalysisDTO.getGapPerEvent().get(abbreviation));
             suggestion.setCheckInFrequency(gapAnalysisDTO.getCheckInFrequency().get(abbreviation));
-            if(gap > 40) suggestion.setPriorityLevel(HIGH);
-            else if(gap > 20) suggestion.setPriorityLevel(MEDIUM);
-            else if(gap > 0) suggestion.setPriorityLevel(LOW);
+            if (gap > 40) suggestion.setPriorityLevel(HIGH);
+            else if (gap > 20) suggestion.setPriorityLevel(MEDIUM);
+            else if (gap > 0) suggestion.setPriorityLevel(LOW);
             else suggestion.setPriorityLevel(MAINTENANCE);
             suggestion.setSuggestionDate(LocalDate.now());
             suggestion.setSource(ImprovementGenerationSource.RULE_ENGINE);

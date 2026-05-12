@@ -34,6 +34,9 @@ public class SoldierExercise {
     @Column
     private Integer currentDistance;
 
+    @Column(name = "pyramid_step")
+    private Integer pyramidStep;
+
     @Column
     private int consecutiveFailureCount = 0;
 

@@ -35,9 +35,6 @@ public class PlannedExercise {
     @Enumerated(EnumType.STRING)
     private PlannedExerciseUnit plannedExerciseUnit;
 
-    @Column(name = "percentage_1rm")
-    private Integer percentage;
-
     @Column(name = "exercise_time")
     private Integer workTime;
 
@@ -46,8 +43,5 @@ public class PlannedExercise {
 
     @Column(name = "exercise_pace")
     private Integer pace;
-
-    @Column(name = "rest_time")
-    private Integer rest;
 
 }

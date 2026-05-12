@@ -27,7 +27,7 @@ public class SoldierService {
         return newSoldierResponseDTO(soldier);
     }
 
-    public SoldierResponseDTO newSoldierResponseDTO(Soldier soldier) {
+    private SoldierResponseDTO newSoldierResponseDTO(Soldier soldier) {
         SoldierResponseDTO soldierResponseDTO = new SoldierResponseDTO();
         soldierResponseDTO.setId(soldier.getId());
         soldierResponseDTO.setName(soldier.getName());

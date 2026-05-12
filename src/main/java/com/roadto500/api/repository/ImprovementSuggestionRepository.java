@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 public interface ImprovementSuggestionRepository extends JpaRepository<ImprovementSuggestion, Long> {
     Optional<ImprovementSuggestion> findBySoldier_IdAndAftEvent_Abbreviation(Long soldierId, String abbreviation);
-    List<ImprovementSuggestion>findBySoldier_Id(Long soldierID);
 }

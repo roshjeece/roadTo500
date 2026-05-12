@@ -22,10 +22,6 @@ public class PlannedSession {
     @JsonIgnore
     private WeeklyPlan weeklyPlan;
 
-    @ManyToOne
-    @JoinColumn(name = "check_in_set")
-    private AftEvent aftEvent;
-
     @Column(name = "session_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
@@ -40,12 +36,6 @@ public class PlannedSession {
     @Column(name = "day_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private DayStatus dayStatus;
-
-    @Column(name = "planned_min_rpe")
-    private Integer plannedMinRPE;
-
-    @Column(name = "planned_max_rpe")
-    private Integer plannedMaxRPE;
 
     @Column(name = "user_rpe")
     private Integer userRPE;

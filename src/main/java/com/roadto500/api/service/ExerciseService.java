@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class ExerciseService {
         return exerciseAftEventRepository.findByAftEvent_Abbreviation(abbreviation)
                 .stream()
                 .map(ExerciseAftEvent::getExercise)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Exercise> getExercisesByDifficulty(ExerciseDifficulty exerciseDifficulty) {

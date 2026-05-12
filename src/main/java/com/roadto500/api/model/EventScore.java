@@ -27,4 +27,7 @@ public class EventScore {
     @Column(name = "points_earned", nullable = false)
     private Integer pointsEarned;
 
+    @Column(name = "is_check_in", nullable = false)
+    private boolean checkIn = false;
+
 }
