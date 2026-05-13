@@ -3,11 +3,19 @@ package com.roadto500.api.service;
 import com.roadto500.api.dto.SoldierRequestDTO;
 import com.roadto500.api.dto.SoldierResponseDTO;
 import com.roadto500.api.model.Soldier;
+import com.roadto500.api.repository.AftTestResultRepository;
+import com.roadto500.api.repository.EventScoreRepository;
+import com.roadto500.api.repository.PlannedExerciseRepository;
+import com.roadto500.api.repository.PlannedSessionRepository;
+import com.roadto500.api.repository.SoldierProfileRepository;
 import com.roadto500.api.repository.SoldierRepository;
+import com.roadto500.api.repository.WeeklyPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +62,12 @@ public class SoldierService {
         soldier.setGender(soldierRequestDTO.getGender());
         soldier.setMos(soldierRequestDTO.getMos());
         return newSoldierResponseDTO(soldierRepository.save(soldier));
+    }
+
+    public List<SoldierResponseDTO> getAllSoldiers() {
+        return soldierRepository.findAll()
+                .stream()
+                .map(this::newSoldierResponseDTO)
+                .toList();
     }
 }

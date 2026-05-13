@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/soldiers")
 @RequiredArgsConstructor
@@ -34,5 +36,10 @@ public class SoldierController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSoldier(@PathVariable Long id) {
         soldierService.deleteSoldier(id);
+    }
+
+    @GetMapping
+    public List<SoldierResponseDTO> getAllSoldiers() {
+        return soldierService.getAllSoldiers();
     }
 }

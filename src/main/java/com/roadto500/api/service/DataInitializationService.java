@@ -5,6 +5,7 @@ import com.roadto500.api.repository.AftEventRepository;
 import com.roadto500.api.repository.ExerciseAftEventRepository;
 import com.roadto500.api.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class DataInitializationService implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String @NonNull ... args) throws Exception {
         if (aftEventRepository.count() == 0) {
             aftEventRepository.save(createMdl());
             aftEventRepository.save(createHrp());

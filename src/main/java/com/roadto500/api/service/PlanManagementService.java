@@ -23,7 +23,7 @@ public class PlanManagementService {
     public void autoGeneratePlans() {
         LocalDate today = LocalDate.now();
         List<WeeklyPlan> expiredPlans = weeklyPlanRepository
-                .findByWeekStatusAndWeekEndLessThanEqual(WeekStatus.ACTIVE, today);
+                .findByWeekStatusAndWeekEndBefore(WeekStatus.ACTIVE, today);
 
         if (expiredPlans.isEmpty()) {
             log.info("Scheduled plan generation: no expired plans found.");

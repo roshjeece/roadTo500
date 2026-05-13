@@ -17,19 +17,20 @@ public class PlanSupersessionService {
     private final PlannedSessionRepository plannedSessionRepository;
 
     public void supersedePlan(Long soldierId) {
-        weeklyPlanRepository
-                .findBySoldier_IdAndWeekStatus(soldierId, WeekStatus.ACTIVE)
-                .ifPresent(activePlan -> {
-                    List<PlannedSession> sessions = activePlan.getPlannedSessions();
-                    for (PlannedSession session : sessions) {
-                        if (session.getDayStatus() == DayStatus.ACTIVE) {
-                            session.setDayStatus(DayStatus.INCOMPLETE);
-                            plannedSessionRepository.save(session);
-                        }
-                    }
-                    activePlan.setWeekStatus(WeekStatus.SUPERSEDED);
-                    weeklyPlanRepository.save(activePlan);
-                    log.info("Superseded plan {} for soldier {}", activePlan.getId(), soldierId);
-                });
+        List<WeeklyPlan> activePlans = weeklyPlanRepository
+                .findBySoldier_IdAndWeekStatusOrderByIdDesc(soldierId, WeekStatus.ACTIVE);
+
+        for (WeeklyPlan activePlan : activePlans) {
+            List<PlannedSession> sessions = activePlan.getPlannedSessions();
+            for (PlannedSession session : sessions) {
+                if (session.getDayStatus() == DayStatus.ACTIVE) {
+                    session.setDayStatus(DayStatus.INCOMPLETE);
+                    plannedSessionRepository.save(session);
+                }
+            }
+            activePlan.setWeekStatus(WeekStatus.SUPERSEDED);
+            weeklyPlanRepository.save(activePlan);
+            log.info("Superseded plan {} for soldier {}", activePlan.getId(), soldierId);
+        }
     }
 }

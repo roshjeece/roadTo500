@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface WeeklyPlanRepository extends JpaRepository<WeeklyPlan, Long> {
-    Optional<WeeklyPlan> findBySoldier_IdAndWeekStatus(Long soldierId, WeekStatus weekStatus);
-    List<WeeklyPlan> findByWeekStatusAndWeekEndLessThanEqual(WeekStatus weekStatus, LocalDate date);
+    List<WeeklyPlan> findBySoldier_IdAndWeekStatusOrderByIdDesc(Long soldierId, WeekStatus weekStatus);
+    List<WeeklyPlan> findByWeekStatusAndWeekEndBefore(WeekStatus weekStatus, LocalDate date);
+
 }

@@ -9,6 +9,7 @@ export const createSoldier = (data) => api.post('/soldiers', data)
 export const getSoldier = (id) => api.get(`/soldiers/${id}`)
 export const updateSoldier = (id, data) => api.put(`/soldiers/${id}`, data)
 export const getAllSoldiers = () => api.get('/soldiers')
+export const deleteSoldier = (id) => api.delete(`/soldiers/${id}`)
 
 // Profile
 export const createProfile = (soldierId, data) => api.post(`/soldiers/${soldierId}/profile`, data)
@@ -22,7 +23,8 @@ export const getCurrentScores = (soldierId) => api.get(`/performance/scores/${so
 // Plan
 export const generatePlan = (soldierId, startToday) =>
     api.post(`/plan/${soldierId}?startToday=${startToday}`)
-export const getActivePlan = (soldierId) => api.get(`/plan/${soldierId}/active`)
+export const getActivePlan = (soldierId) =>
+    api.get(`/plan/${soldierId}/active`).then(res => res.status === 204 ? { data: null } : res)
 
 // Sessions
 export const getCheckInStatus = (sessionId) => api.get(`/sessions/${sessionId}/checkins`)

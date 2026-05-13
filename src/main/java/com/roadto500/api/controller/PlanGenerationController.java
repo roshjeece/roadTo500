@@ -5,6 +5,7 @@ import com.roadto500.api.service.PlanGenerationService;
 import com.roadto500.api.service.PlanQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,9 @@ public class PlanGenerationController {
     }
 
     @GetMapping("/{soldierId}/active")
-    public WeeklyPlan getActivePlan(@PathVariable Long soldierId) {
-        return planQueryService.getActivePlan(soldierId);
+    public ResponseEntity<WeeklyPlan> getActivePlan(@PathVariable Long soldierId) {
+        return planQueryService.getActivePlan(soldierId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 }

@@ -6,15 +6,18 @@ import com.roadto500.api.repository.WeeklyPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PlanQueryService {
 
     private final WeeklyPlanRepository weeklyPlanRepository;
 
-    public WeeklyPlan getActivePlan(Long soldierId) {
-        return weeklyPlanRepository
-                .findBySoldier_IdAndWeekStatus(soldierId, WeekStatus.ACTIVE)
-                .orElseThrow(() -> new IllegalStateException("No active plan found for soldier " + soldierId));
+    public Optional<WeeklyPlan> getActivePlan(Long soldierId) {
+        List<WeeklyPlan> plans = weeklyPlanRepository
+                .findBySoldier_IdAndWeekStatusOrderByIdDesc(soldierId, WeekStatus.ACTIVE);
+        return plans.isEmpty() ? Optional.empty() : Optional.of(plans.getFirst());
     }
 }

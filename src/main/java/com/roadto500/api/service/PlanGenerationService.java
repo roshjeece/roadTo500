@@ -83,7 +83,7 @@ public class PlanGenerationService {
                 plannedSession.setSessionDate(sessionDate);
                 plannedSession.setDayOfWeek(sessionDate.getDayOfWeek());
                 plannedSession.setDayStatus(DayStatus.ACTIVE);
-                plannedSession.setDescription("placeholder description");
+                plannedSession.setDescription("");
                 plannedSessionRepository.save(plannedSession);
 
                 int supplementaryLimit = sessionType == SessionType.SESSION_3 ? 0 : 4;
