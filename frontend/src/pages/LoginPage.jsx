@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import {useState, useEffect} from 'react'
+import {useNavigate} from 'react-router'
+import {useForm} from 'react-hook-form'
+import {yupResolver} from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { useSoldier } from '../context/SoldierContext'
-import { getAllSoldiers, createSoldier, deleteSoldier } from '../api/api'
-import { colors, fonts } from '../constants/theme'
+import {useSoldier} from '../context/SoldierContext'
+import {getAllSoldiers, createSoldier, deleteSoldier} from '../api/api'
+import {colors, fonts} from '../constants/theme'
 
 const createSchema = yup.object({
     name: yup.string().required('Name is required'),
+    rank: yup.string().required('Rank is required'),
     dob: yup.string().required('Date of birth is required'),
     gender: yup.string().required('Gender is required'),
     mos: yup.string().required('MOS is required'),
@@ -16,13 +17,13 @@ const createSchema = yup.object({
 
 export default function LoginPage() {
     const navigate = useNavigate()
-    const { login } = useSoldier()
+    const {login} = useSoldier()
     const [soldiers, setSoldiers] = useState([])
     const [showCreate, setShowCreate] = useState(false)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const {register, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(createSchema)
     })
 
@@ -71,14 +72,14 @@ export default function LoginPage() {
     return (
         <div
             className="min-h-screen flex items-center justify-center"
-            style={{ backgroundColor: colors.bgPrimary, fontFamily: fonts.body }}
+            style={{backgroundColor: colors.bgPrimary, fontFamily: fonts.body}}
         >
             {/* Background grid */}
             <div className="absolute inset-0 opacity-5" style={{
                 backgroundImage: `linear-gradient(${colors.accentGold} 1px, transparent 1px),
                           linear-gradient(90deg, ${colors.accentGold} 1px, transparent 1px)`,
                 backgroundSize: '40px 40px'
-            }} />
+            }}/>
 
             <div className="relative z-10 w-full max-w-2xl px-6">
 
@@ -93,27 +94,47 @@ export default function LoginPage() {
                     }}>
                         ROAD TO 500
                     </h1>
-                    <p style={{ color: colors.textSecondary, fontFamily: fonts.condensed, letterSpacing: '0.2em', fontSize: '0.85rem' }}>
+                    <p style={{
+                        color: colors.textSecondary,
+                        fontFamily: fonts.condensed,
+                        letterSpacing: '0.2em',
+                        fontSize: '0.85rem'
+                    }}>
                         ARMY FITNESS TEST — PERFORMANCE TRACKING
                     </p>
-                    <div style={{ width: '60px', height: '2px', backgroundColor: colors.accentGold, margin: '12px auto 0' }} />
+                    <div style={{
+                        width: '60px',
+                        height: '2px',
+                        backgroundColor: colors.accentGold,
+                        margin: '12px auto 0'
+                    }}/>
                 </div>
 
                 {error && (
-                    <div className="mb-4 px-4 py-3 rounded" style={{ backgroundColor: colors.dangerDim, border: `1px solid ${colors.danger}`, color: colors.danger }}>
+                    <div className="mb-4 px-4 py-3 rounded" style={{
+                        backgroundColor: colors.dangerDim,
+                        border: `1px solid ${colors.danger}`,
+                        color: colors.danger
+                    }}>
                         {error}
                     </div>
                 )}
 
                 {!showCreate ? (
                     <div>
-                        <p style={{ color: colors.textSecondary, fontFamily: fonts.condensed, letterSpacing: '0.15em', fontSize: '0.8rem', marginBottom: '12px' }}>
+                        <p style={{
+                            color: colors.textSecondary,
+                            fontFamily: fonts.condensed,
+                            letterSpacing: '0.15em',
+                            fontSize: '0.8rem',
+                            marginBottom: '12px'
+                        }}>
                             SELECT SOLDIER
                         </p>
 
                         <div className="space-y-2 mb-6">
                             {soldiers.length === 0 && (
-                                <p style={{ color: colors.textSecondary }}>No soldiers found.</p>
+                                <p style={{color: colors.textSecondary}}>No soldiers found.</p>
                             )}
                             {soldiers.map(s => (
                                 <div key={s.id} className="flex items-center gap-2">
@@ -137,11 +158,22 @@ export default function LoginPage() {
                                             e.currentTarget.style.backgroundColor = colors.bgCard
                                         }}
                                     >
-                                        <span style={{ color: colors.accentGold, fontFamily: fonts.mono, fontSize: '0.75rem', marginRight: '12px' }}>
-                                            #{String(s.id).padStart(3, '0')}
-                                        </span>
+                                        {s.rank && (
+                                            <span style={{
+                                                color: colors.accentGold,
+                                                fontFamily: fonts.mono,
+                                                fontSize: '0.75rem',
+                                                marginRight: '8px'
+                                            }}>
+                                                {s.rank}
+                                            </span>
+                                        )}
                                         {s.name}
-                                        <span style={{ color: colors.textSecondary, fontSize: '0.8rem', marginLeft: '8px' }}>
+                                        <span style={{
+                                            color: colors.textSecondary,
+                                            fontSize: '0.8rem',
+                                            marginLeft: '8px'
+                                        }}>
                                             {s.mos}
                                         </span>
                                     </button>
@@ -184,7 +216,7 @@ export default function LoginPage() {
                         {confirmDelete && (
                             <div
                                 className="fixed inset-0 flex items-center justify-center z-50"
-                                style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}
+                                style={{backgroundColor: 'rgba(0,0,0,0.7)'}}
                                 onClick={() => !deleting && setConfirmDelete(null)}
                             >
                                 <div
@@ -195,14 +227,32 @@ export default function LoginPage() {
                                     }}
                                     onClick={e => e.stopPropagation()}
                                 >
-                                    <p style={{ fontFamily: fonts.condensed, fontSize: '0.7rem', letterSpacing: '0.2em', color: colors.danger, marginBottom: '8px' }}>
+                                    <p style={{
+                                        fontFamily: fonts.condensed,
+                                        fontSize: '0.7rem',
+                                        letterSpacing: '0.2em',
+                                        color: colors.danger,
+                                        marginBottom: '8px'
+                                    }}>
                                         CONFIRM DELETE
                                     </p>
-                                    <p style={{ fontFamily: fonts.heading, fontSize: '1.6rem', color: colors.textPrimary, marginBottom: '6px' }}>
-                                        {confirmDelete.name}
+                                    <p style={{
+                                        fontFamily: fonts.heading,
+                                        fontSize: '1.6rem',
+                                        color: colors.textPrimary,
+                                        marginBottom: '6px'
+                                    }}>
+                                        {confirmDelete.rank && `${confirmDelete.rank}`}{confirmDelete.name}
                                     </p>
-                                    <p style={{ fontFamily: fonts.condensed, fontSize: '0.85rem', color: colors.textSecondary, marginBottom: '24px', lineHeight: 1.5 }}>
-                                        This will permanently delete the soldier and all associated data. This cannot be undone.
+                                    <p style={{
+                                        fontFamily: fonts.condensed,
+                                        fontSize: '0.85rem',
+                                        color: colors.textSecondary,
+                                        marginBottom: '24px',
+                                        lineHeight: 1.5
+                                    }}>
+                                        This will permanently delete the soldier and all associated data. This cannot be
+                                        undone.
                                     </p>
                                     <div className="flex gap-3">
                                         <button
@@ -265,18 +315,93 @@ export default function LoginPage() {
                     </div>
                 ) : (
                     <div>
-                        <p style={{ color: colors.textSecondary, fontFamily: fonts.condensed, letterSpacing: '0.15em', fontSize: '0.8rem', marginBottom: '16px' }}>
+                        <p style={{
+                            color: colors.textSecondary,
+                            fontFamily: fonts.condensed,
+                            letterSpacing: '0.15em',
+                            fontSize: '0.8rem',
+                            marginBottom: '16px'
+                        }}>
                             NEW SOLDIER REGISTRATION
                         </p>
 
+
                         <form onSubmit={handleSubmit(onCreateSubmit)} className="space-y-4">
+                            <div style={{marginBottom: '16px'}}>
+                                <label style={{
+                                    color: colors.textSecondary,
+                                    fontFamily: fonts.condensed,
+                                    fontSize: '0.75rem',
+                                    letterSpacing: '0.15em',
+                                    display: 'block',
+                                    marginBottom: '4px'
+                                }}>
+                                    RANK
+                                </label>
+                                <select
+                                    {...register('rank')}
+                                    className="w-full px-4 py-3 rounded outline-none"
+                                    style={{
+                                        backgroundColor: colors.bgCard,
+                                        border: `1px solid ${colors.border}`,
+                                        color: colors.textPrimary,
+                                        fontFamily: fonts.body,
+                                        fontSize: '0.95rem',
+                                    }}
+                                >
+                                    <option value="">Select...</option>
+                                    <option value="PVT">PVT</option>
+                                    <option value="PV2">PV2</option>
+                                    <option value="PFC">PFC</option>
+                                    <option value="SPC">SPC</option>
+                                    <option value="CPL">CPL</option>
+                                    <option value="SGT">SGT</option>
+                                    <option value="SSG">SSG</option>
+                                    <option value="SFC">SFC</option>
+                                    <option value="MSG">MSG</option>
+                                    <option value="1SG">1SG</option>
+                                    <option value="SGM">SGM</option>
+                                    <option value="CSM">CSM</option>
+                                    <option value="SMA">SMA</option>
+                                    <option value="WO1">WO1</option>
+                                    <option value="CW2">CW2</option>
+                                    <option value="CW3">CW3</option>
+                                    <option value="CW4">CW4</option>
+                                    <option value="CW5">CW5</option>
+                                    <option value="CDT">CDT</option>
+                                    <option value="2LT">2LT</option>
+                                    <option value="1LT">1LT</option>
+                                    <option value="CPT">CPT</option>
+                                    <option value="MAJ">MAJ</option>
+                                    <option value="LTC">LTC</option>
+                                    <option value="COL">COL</option>
+                                    <option value="BG">BG</option>
+                                    <option value="MG">MG</option>
+                                    <option value="LTG">LTG</option>
+                                    <option value="GEN">GEN</option>
+                                </select>
+                                {errors.rank && (
+                                    <p style={{
+                                        color: colors.danger,
+                                        fontSize: '0.75rem',
+                                        marginTop: '2px'
+                                    }}>{errors.rank.message}</p>
+                                )}
+                            </div>
                             {[
-                                { name: 'name', label: 'FULL NAME / RANK', placeholder: '1LT Reece' },
-                                { name: 'dob', label: 'DATE OF BIRTH', placeholder: 'YYYY-MM-DD', type: 'date' },
-                                { name: 'mos', label: 'MOS', placeholder: '11A' },
+                                {name: 'name', label: 'FULL NAME', placeholder: 'Joshua Reece'},
+                                {name: 'dob', label: 'DATE OF BIRTH', placeholder: 'YYYY-MM-DD', type: 'date'},
+                                {name: 'mos', label: 'MOS', placeholder: '11A'},
                             ].map(field => (
                                 <div key={field.name}>
-                                    <label style={{ color: colors.textSecondary, fontFamily: fonts.condensed, fontSize: '0.75rem', letterSpacing: '0.15em', display: 'block', marginBottom: '4px' }}>
+                                    <label style={{
+                                        color: colors.textSecondary,
+                                        fontFamily: fonts.condensed,
+                                        fontSize: '0.75rem',
+                                        letterSpacing: '0.15em',
+                                        display: 'block',
+                                        marginBottom: '4px'
+                                    }}>
                                         {field.label}
                                     </label>
                                     <input
@@ -295,13 +420,24 @@ export default function LoginPage() {
                                         onBlur={e => e.currentTarget.style.borderColor = errors[field.name] ? colors.danger : colors.border}
                                     />
                                     {errors[field.name] && (
-                                        <p style={{ color: colors.danger, fontSize: '0.75rem', marginTop: '2px' }}>{errors[field.name].message}</p>
+                                        <p style={{
+                                            color: colors.danger,
+                                            fontSize: '0.75rem',
+                                            marginTop: '2px'
+                                        }}>{errors[field.name].message}</p>
                                     )}
                                 </div>
                             ))}
 
                             <div>
-                                <label style={{ color: colors.textSecondary, fontFamily: fonts.condensed, fontSize: '0.75rem', letterSpacing: '0.15em', display: 'block', marginBottom: '4px' }}>
+                                <label style={{
+                                    color: colors.textSecondary,
+                                    fontFamily: fonts.condensed,
+                                    fontSize: '0.75rem',
+                                    letterSpacing: '0.15em',
+                                    display: 'block',
+                                    marginBottom: '4px'
+                                }}>
                                     GENDER
                                 </label>
                                 <select
@@ -320,7 +456,11 @@ export default function LoginPage() {
                                     <option value="Female">Female</option>
                                 </select>
                                 {errors.gender && (
-                                    <p style={{ color: colors.danger, fontSize: '0.75rem', marginTop: '2px' }}>{errors.gender.message}</p>
+                                    <p style={{
+                                        color: colors.danger,
+                                        fontSize: '0.75rem',
+                                        marginTop: '2px'
+                                    }}>{errors.gender.message}</p>
                                 )}
                             </div>
 

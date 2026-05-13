@@ -17,6 +17,9 @@ public class Soldier {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false)
+    private String rank;
+
     // keeping this optional for now given non-focus on authentication, just a placeholder if I was to implement authentication later
     @Column
     private String password;

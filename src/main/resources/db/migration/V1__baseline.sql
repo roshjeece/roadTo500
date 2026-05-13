@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS exercise (
 CREATE TABLE IF NOT EXISTS soldier (
                                        id              BIGSERIAL PRIMARY KEY,
                                        name            VARCHAR(255) NOT NULL,
+                                       rank            VARCHAR(3) NOT NULL,
                                        password        VARCHAR(255),
                                        date_of_birth   DATE NOT NULL,
                                        gender          VARCHAR(255) NOT NULL,

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Data
 public class SoldierRequestDTO {
     private String name;
+    private String rank;
     private String password;
     private LocalDate dob;
     private String gender;

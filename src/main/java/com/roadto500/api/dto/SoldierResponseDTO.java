@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class SoldierResponseDTO {
     private Long id;
     private String name;
+    private String rank;
     private LocalDate dob;
     private String gender;
     private String mos;

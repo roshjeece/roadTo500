@@ -154,7 +154,7 @@ export default function DashboardPage() {
                     WELCOME BACK
                 </p>
                 <h1 style={{ fontFamily: fonts.heading, fontSize: '2.5rem', color: colors.textPrimary, letterSpacing: '0.05em' }}>
-                    {soldier?.name}
+                    {soldier?.rank} {soldier?.name}
                 </h1>
                 {hasScores && (
                     <p style={{ fontFamily: fonts.mono, fontSize: '0.9rem', color: colors.accentGold, marginTop: '4px' }}>

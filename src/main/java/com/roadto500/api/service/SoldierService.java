@@ -3,16 +3,9 @@ package com.roadto500.api.service;
 import com.roadto500.api.dto.SoldierRequestDTO;
 import com.roadto500.api.dto.SoldierResponseDTO;
 import com.roadto500.api.model.Soldier;
-import com.roadto500.api.repository.AftTestResultRepository;
-import com.roadto500.api.repository.EventScoreRepository;
-import com.roadto500.api.repository.PlannedExerciseRepository;
-import com.roadto500.api.repository.PlannedSessionRepository;
-import com.roadto500.api.repository.SoldierProfileRepository;
 import com.roadto500.api.repository.SoldierRepository;
-import com.roadto500.api.repository.WeeklyPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +19,7 @@ public class SoldierService {
     public SoldierResponseDTO createSoldier(SoldierRequestDTO soldierRequestDTO) {
         Soldier soldier = new Soldier();
         soldier.setName(soldierRequestDTO.getName());
+        soldier.setRank(soldierRequestDTO.getRank());
         soldier.setPassword(soldierRequestDTO.getPassword());
         soldier.setDob(soldierRequestDTO.getDob());
         soldier.setGender(soldierRequestDTO.getGender());
@@ -39,6 +33,7 @@ public class SoldierService {
         SoldierResponseDTO soldierResponseDTO = new SoldierResponseDTO();
         soldierResponseDTO.setId(soldier.getId());
         soldierResponseDTO.setName(soldier.getName());
+        soldierResponseDTO.setRank(soldier.getRank());
         soldierResponseDTO.setDob(soldier.getDob());
         soldierResponseDTO.setGender(soldier.getGender());
         soldierResponseDTO.setMos(soldier.getMos());
@@ -57,6 +52,7 @@ public class SoldierService {
     public SoldierResponseDTO updateSoldier(Long id, SoldierRequestDTO soldierRequestDTO) {
         Soldier soldier = soldierRepository.findById(id).orElseThrow();
         soldier.setName(soldierRequestDTO.getName());
+        soldier.setRank(soldierRequestDTO.getRank());
         soldier.setPassword(soldierRequestDTO.getPassword());
         soldier.setDob(soldierRequestDTO.getDob());
         soldier.setGender(soldierRequestDTO.getGender());

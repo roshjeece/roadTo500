@@ -300,7 +300,7 @@ export default function ProfilePage() {
                         SOLDIER
                     </p>
                     <h1 style={{ fontFamily: fonts.heading, fontSize: '2.5rem', color: colors.textPrimary, letterSpacing: '0.05em' }}>
-                        {soldier?.name}
+                        {soldier?.rank} {soldier?.name}
                     </h1>
                 </div>
                 <div className="flex gap-2">
@@ -370,7 +370,7 @@ export default function ProfilePage() {
                             CONFIRM DELETE
                         </p>
                         <p style={{ fontFamily: fonts.heading, fontSize: '1.6rem', color: colors.textPrimary, marginBottom: '6px' }}>
-                            {soldier?.name}
+                            {soldier?.rank} {soldier?.name}
                         </p>
                         <p style={{ fontFamily: fonts.condensed, fontSize: '0.85rem', color: colors.textSecondary, marginBottom: '24px', lineHeight: 1.5 }}>
                             This will permanently delete this soldier and all associated data. This cannot be undone.
@@ -436,6 +436,7 @@ export default function ProfilePage() {
                 <p style={{ fontFamily: fonts.condensed, fontSize: '0.7rem', letterSpacing: '0.2em', color: colors.textSecondary, marginBottom: '4px' }}>
                     SOLDIER INFO
                 </p>
+                <DataRow label="Rank" value={soldier?.rank} />
                 <DataRow label="MOS" value={soldier?.mos} />
                 <DataRow label="Gender" value={soldier?.gender} />
                 <DataRow label="Date of Birth" value={soldier?.dob} mono />
